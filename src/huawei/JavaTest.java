@@ -1,5 +1,6 @@
 package huawei;
 
+import java.math.BigDecimal;
 import java.util.Stack;
 
 /**
@@ -17,6 +18,9 @@ public class JavaTest {
 		private static final long serialVersionUID = 9109750478481891787L;
 
 		public RPNSyntaxErrorException() {
+		}
+		
+		public RPNSyntaxErrorException(String warning) {
 		}
 	}
 
@@ -44,56 +48,92 @@ public class JavaTest {
 		
 		for(String item : items)
 		{
+			boolean isOperationNumLessThanTwo = false;
+			double num1=0, num2=0;
+			if(stack.size()<2)
+			{
+				isOperationNumLessThanTwo = true;
+			}
+			else
+			{
+				num1 = stack.pop();
+				num2 = stack.pop();
+			}
 			switch(item)
 			{
 			case "+":
-				if(stack.size()<2) return -1;
+				if(isOperationNumLessThanTwo)
+				{
+					throw new RPNSyntaxErrorException();
+				}
 				else
 				{
-					double num1 = stack.pop();
-					double num2 = stack.pop();
 					num1 += num2;
 					stack.push(num1);
 				}
 				break;
 			case "-":
-				if(stack.size()<2) return -1;
+				if(isOperationNumLessThanTwo)
+				{
+					throw new RPNSyntaxErrorException();
+				}
 				else
 				{
-					double num1 = stack.pop();
-					double num2 = stack.pop();
 					num1 = num2 - num1;
 					stack.push(num1);
 				}
 				break;
 			case "*":
-				if(stack.size()<2) return -1;
+				if(isOperationNumLessThanTwo)
+				{
+					throw new RPNSyntaxErrorException();
+				}
 				else
 				{
-					double num1 = stack.pop();
-					double num2 = stack.pop();
 					num1 *= num2;
 					stack.push(num1);
 				}
 				break;
 			case "/":
-				if(stack.size()<2) return -1;
+				if(isOperationNumLessThanTwo)
+				{
+					throw new RPNSyntaxErrorException();
+				}
 				else
 				{
-					double num1 = stack.pop();
-					double num2 = stack.pop();
-					num1 = num2 / num1;
-					stack.push(num1);
+					BigDecimal n = new BigDecimal(num1);
+					if(n.compareTo(new BigDecimal(0.0d)) == 0)
+					{
+						throw new DevideByZeroException();
+					}
+					else
+					{
+						num1 = num2 / num1;
+						stack.push(num1);
+					}
 				}
 				break;
 			default:
-				double num = Double.valueOf(item);
-				stack.push(num);
+				try
+				{
+					double num = Double.valueOf(item);
+					stack.push(num);
+				}catch(NumberFormatException e)
+				{
+					throw new RPNSyntaxErrorException();
+				}
 				break;
 			}
 		}
 		
-		return 3.0;
+		if(stack.size() == 1)
+		{
+			return stack.pop();
+		}
+		else
+		{
+			throw new RPNSyntaxErrorException();
+		}
 	}
 
 	public static void main(String[] args) {
@@ -104,6 +144,7 @@ public class JavaTest {
 				System.out.print(c.calculate(args[0]));
 			}
 		} catch (JavaTestException e) {
+			e.printStackTrace();
 		}
 	}
 }
