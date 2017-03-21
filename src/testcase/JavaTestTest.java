@@ -21,4 +21,10 @@ public class JavaTestTest extends JavaTest {
 	public void test_Case3() throws JavaTestException {
 		calculate("1.0 +");
 	}
+	
+	//test cases by Yufen Wang
+	@Test(expected=DevideByZeroException.class)
+	public void test_Case4() throws JavaTestException {
+		calculate("1 2 2 - /");
+	}
 }

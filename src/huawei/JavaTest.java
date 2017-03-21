@@ -45,72 +45,47 @@ public class JavaTest {
 	public double calculate(String rpn) throws JavaTestException {
 		Stack<Double> stack = new Stack<Double>();
 		String[] items = rpn.split(" ");
+		double num1=0, num2=0;
 		
 		for(String item : items)
 		{
-			boolean isOperationNumLessThanTwo = false;
-			double num1=0, num2=0;
-			if(stack.size()<2)
+			boolean isOperation = item.equals("+")||item.equals("-")||item.equals("*")||item.equals("%");
+			if(isOperation)
 			{
-				isOperationNumLessThanTwo = true;
+				if(stack.size()<2)
+				{
+					throw new RPNSyntaxErrorException();
+				}else
+				{
+					num1 = stack.pop();
+					num2 = stack.pop();
+				}
 			}
-			else
-			{
-				num1 = stack.pop();
-				num2 = stack.pop();
-			}
+			
 			switch(item)
 			{
 			case "+":
-				if(isOperationNumLessThanTwo)
-				{
-					throw new RPNSyntaxErrorException();
-				}
-				else
-				{
-					num1 += num2;
-					stack.push(num1);
-				}
+				num1 += num2;
+				stack.push(num1);
 				break;
 			case "-":
-				if(isOperationNumLessThanTwo)
-				{
-					throw new RPNSyntaxErrorException();
-				}
-				else
-				{
-					num1 = num2 - num1;
-					stack.push(num1);
-				}
+				num1 = num2 - num1;
+				stack.push(num1);
 				break;
 			case "*":
-				if(isOperationNumLessThanTwo)
-				{
-					throw new RPNSyntaxErrorException();
-				}
-				else
-				{
-					num1 *= num2;
-					stack.push(num1);
-				}
+				num1 *= num2;
+				stack.push(num1);
 				break;
 			case "/":
-				if(isOperationNumLessThanTwo)
+				BigDecimal n = new BigDecimal(num1);
+				if(n.compareTo(new BigDecimal(0.0d)) == 0)
 				{
-					throw new RPNSyntaxErrorException();
+					throw new DevideByZeroException();
 				}
 				else
 				{
-					BigDecimal n = new BigDecimal(num1);
-					if(n.compareTo(new BigDecimal(0.0d)) == 0)
-					{
-						throw new DevideByZeroException();
-					}
-					else
-					{
-						num1 = num2 / num1;
-						stack.push(num1);
-					}
+					num1 = num2 / num1;
+					stack.push(num1);
 				}
 				break;
 			default:
@@ -120,7 +95,7 @@ public class JavaTest {
 					stack.push(num);
 				}catch(NumberFormatException e)
 				{
-					throw new RPNSyntaxErrorException();
+					throw new RPNSyntaxErrorException("Number format exception");
 				}
 				break;
 			}
@@ -136,12 +111,13 @@ public class JavaTest {
 		}
 	}
 
+	
 	public static void main(String[] args) {
 		try {
 			JavaTest c = new JavaTest();
 
-			if (args.length == 1) {
-				System.out.print(c.calculate(args[0]));
+			if (args.length == 0) {
+				System.out.print(c.calculate("1 2 2 - /"));
 			}
 		} catch (JavaTestException e) {
 			e.printStackTrace();
