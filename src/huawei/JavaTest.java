@@ -39,11 +39,33 @@ public class JavaTest {
 	 * @return 结果字符串
 	 */
 	public double calculate(String rpn) throws JavaTestException {
-		Stack stack = new Stack();
+		Stack<Double> stack = new Stack<Double>();
 		String[] items = rpn.split(" ");
 		for(String item : items)
 		{
-			
+			switch(item)
+			{
+			case "+":
+				if(stack.size()<2) return -1;
+				else
+				{
+					double num1 = stack.pop();
+					double num2 = stack.pop();
+					num1 += num2;
+					stack.push(num1);
+				}
+				break;
+			case "-":
+				break;
+			case "*":
+				break;
+			case "/":
+				break;
+			default:
+				double num = Double.valueOf(item);
+				stack.push(num);
+				break;
+			}
 		}
 		
 		return 3.0;
