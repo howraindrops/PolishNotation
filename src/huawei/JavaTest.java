@@ -1,6 +1,5 @@
 package huawei;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
@@ -20,9 +19,6 @@ public class JavaTest {
 		private static final long serialVersionUID = 9109750478481891787L;
 
 		public RPNSyntaxErrorException() {
-		}
-		
-		public RPNSyntaxErrorException(String warning) {
 		}
 	}
 
@@ -45,7 +41,6 @@ public class JavaTest {
 	 */
 	public double calculate(String rpn) throws JavaTestException {
 		Stack<Double> stack = new Stack<Double>();
-//		String[] items = rpn.split(" ");
 		List<String> items = parseRPN(rpn);
 		double num1=0, num2=0;
 		
@@ -79,8 +74,7 @@ public class JavaTest {
 				stack.push(num1);
 				break;
 			case "/":
-				BigDecimal n = new BigDecimal(num1);
-				if(n.compareTo(new BigDecimal(0.0d)) == 0)
+				if(isZero(num1))
 				{
 					throw new DevideByZeroException();
 				}
@@ -97,7 +91,7 @@ public class JavaTest {
 					stack.push(num);
 				}catch(NumberFormatException e)
 				{
-					throw new RPNSyntaxErrorException("Number format exception");
+					throw new RPNSyntaxErrorException();
 				}
 				break;
 			}
@@ -152,18 +146,21 @@ public class JavaTest {
 			result.add(sb.toString());
 		}
 		
-		for(String s : result){
-			System.out.println(s);
-		}
 		return result;
+	}
+	
+	public boolean isZero(double n)
+	{
+		final double Delta = 1e-6;
+		return Math.abs(n - 0) < Delta;
 	}
 	
 	public static void main(String[] args) {
 		try {
 			JavaTest c = new JavaTest();
 
-			if (args.length == 0) {
-				System.out.print(c.calculate("1.0 2 2-/"));
+			if (args.length == 1) {
+				System.out.print(c.calculate(args[0]));
 			}
 		} catch (JavaTestException e) {
 			e.printStackTrace();
