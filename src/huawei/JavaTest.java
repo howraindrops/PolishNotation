@@ -1,6 +1,8 @@
 package huawei;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Stack;
 
 /**
@@ -38,18 +40,18 @@ public class JavaTest {
 	 * 请实现calculate函数，来计算逆波兰表达式，
 	 * 可以根据需要增加变量和函数， 但是注意不要修改calculate函数的原型
 	 * 
-	 * @param rpn
-	 *            逆波兰表达式字符串
+	 * @param rpn 逆波兰表达式字符串
 	 * @return 结果字符串
 	 */
 	public double calculate(String rpn) throws JavaTestException {
 		Stack<Double> stack = new Stack<Double>();
-		String[] items = rpn.split(" ");
+//		String[] items = rpn.split(" ");
+		List<String> items = parseRPN(rpn);
 		double num1=0, num2=0;
 		
 		for(String item : items)
 		{
-			boolean isOperation = item.equals("+")||item.equals("-")||item.equals("*")||item.equals("%");
+			boolean isOperation = item.equals("+")||item.equals("-")||item.equals("*")||item.equals("/");
 			if(isOperation)
 			{
 				if(stack.size()<2)
@@ -111,13 +113,57 @@ public class JavaTest {
 		}
 	}
 
+	/**
+	 * 解析传入的逆波兰表达式，区分出数字与操作符
+	 * @param rpn 逆波兰表达式字符串
+	 * @return 解析后的字符串列表
+	 */
+	public List<String> parseRPN(String rpn)
+	{
+		List<String> result = new ArrayList<String>();
+		StringBuilder sb = new StringBuilder("");
+		boolean isOperation = false;
+		boolean isBlank = false;
+		boolean isNumEmpty = false;
+		for(int i=0; i<rpn.length(); i++)
+		{
+			char c = rpn.charAt(i);
+			isOperation = c=='+'||c=='-'||c=='*'||c=='/';
+			isBlank = c == ' ';
+			isNumEmpty = sb.length() == 0;
+			if(isOperation||isBlank)
+			{
+				if(!isNumEmpty)
+				{
+					result.add(sb.toString());
+					sb.setLength(0);
+				}
+				if(isOperation)
+				{
+					result.add(String.valueOf(c));
+				}
+			}else
+			{
+				sb.append(c);
+			}
+		}
+		if(!isNumEmpty)
+		{
+			result.add(sb.toString());
+		}
+		
+		for(String s : result){
+			System.out.println(s);
+		}
+		return result;
+	}
 	
 	public static void main(String[] args) {
 		try {
 			JavaTest c = new JavaTest();
 
 			if (args.length == 0) {
-				System.out.print(c.calculate("1 2 2 - /"));
+				System.out.print(c.calculate("1.0 2 2-/"));
 			}
 		} catch (JavaTestException e) {
 			e.printStackTrace();
