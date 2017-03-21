@@ -41,6 +41,7 @@ public class JavaTest {
 	public double calculate(String rpn) throws JavaTestException {
 		Stack<Double> stack = new Stack<Double>();
 		String[] items = rpn.split(" ");
+		
 		for(String item : items)
 		{
 			switch(item)
@@ -56,10 +57,34 @@ public class JavaTest {
 				}
 				break;
 			case "-":
+				if(stack.size()<2) return -1;
+				else
+				{
+					double num1 = stack.pop();
+					double num2 = stack.pop();
+					num1 = num2 - num1;
+					stack.push(num1);
+				}
 				break;
 			case "*":
+				if(stack.size()<2) return -1;
+				else
+				{
+					double num1 = stack.pop();
+					double num2 = stack.pop();
+					num1 *= num2;
+					stack.push(num1);
+				}
 				break;
 			case "/":
+				if(stack.size()<2) return -1;
+				else
+				{
+					double num1 = stack.pop();
+					double num2 = stack.pop();
+					num1 = num2 / num1;
+					stack.push(num1);
+				}
 				break;
 			default:
 				double num = Double.valueOf(item);
